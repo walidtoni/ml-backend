@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^21.3.12",
+    "@tensorflow/tfjs-backend-cpu": "link:../link-package/node_modules/@tensorflow/tfjs-backend-cpu",
+    "@tensorflow/tfjs-backend-webgl": "link:../link-package/node_modules/@tensorflow/tfjs-backend-webgl",
+    "@tensorflow/tfjs-converter": "link:../link-package/node_modules/@tensorflow/tfjs-converter",
+    "@tensorflow/tfjs-core": "link:../link-package/node_modules/@tensorflow/tfjs-core",
+    "@tensorflow/tfjs-data": "link:../link-package/node_modules/@tensorflow/tfjs-data",
+    "@tensorflow/tfjs-layers": "link:../link-package/node_modules/@tensorflow/tfjs-layers"
+  }
+}
