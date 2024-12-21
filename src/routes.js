@@ -1,7 +1,7 @@
 const tfjs = require('@tensorflow/tfjs-node');
 
 function loadModel() {
-    const modelUrl = "https://storage.googleapis.com/mlgcwalidbangkit/model-in-prod/model.json";
+    const modelUrl = process.env.BUCKET_URL;
     return tfjs.loadLayersModel(modelUrl);
 }
 

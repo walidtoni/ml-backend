@@ -4,18 +4,20 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./src/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "@tensorflow/tfjs-converter": "^2.7.0",
+    "@tensorflow/tfjs-core": "^2.7.0"
+  },
   "dependencies": {
     "@hapi/hapi": "^21.3.12",
-    "@tensorflow/tfjs-backend-cpu": "link:../link-package/node_modules/@tensorflow/tfjs-backend-cpu",
-    "@tensorflow/tfjs-backend-webgl": "link:../link-package/node_modules/@tensorflow/tfjs-backend-webgl",
-    "@tensorflow/tfjs-converter": "link:../link-package/node_modules/@tensorflow/tfjs-converter",
-    "@tensorflow/tfjs-core": "link:../link-package/node_modules/@tensorflow/tfjs-core",
-    "@tensorflow/tfjs-data": "link:../link-package/node_modules/@tensorflow/tfjs-data",
-    "@tensorflow/tfjs-layers": "link:../link-package/node_modules/@tensorflow/tfjs-layers"
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.2.0",
+    "nodemon": "^3.1.9"
   }
 }
