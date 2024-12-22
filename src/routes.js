@@ -1,11 +1,11 @@
 const tfjs = require('@tensorflow/tfjs-node');
 
-function loadModel() {
+async function loadModel() {
     const modelUrl = process.env.BUCKET_URL;
     return tfjs.loadLayersModel(modelUrl);
 }
 
-function predict(model, imageBuffer) {
+async function predict(model, imageBuffer) {
     // Decode the image buffer as an RGB image
     const tensor = tfjs.node
         .decodeJpeg(imageBuffer, 3)           // Ensure 3 channels for RGB
