@@ -5,7 +5,8 @@
   "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/app.js"
+    "start": "nodemon src/app.js",
+    "upload": "node firestore.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,9 @@
   "dependencies": {
     "@hapi/hapi": "^21.3.12",
     "@tensorflow/tfjs-node": "^4.14.0",
-    "nodemon": "^3.1.9"
+    "dotenv": "^16.3.1",
+    "@google-cloud/firestore": "^7.10.0",
+    "uuid": "^9.0.0"
   }
-}
+} 
+
