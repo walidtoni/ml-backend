@@ -31,7 +31,7 @@ async function getHistories(data) {
             }
         })
     } catch (error) {
-        console.error('Error storing data:', error);
+        console.error('Error getting histories:', error);
         throw error
     }
 }
@@ -85,7 +85,7 @@ async function getHistories(data) {
                         suggestion: "Segera periksa ke dokter!",
                         createdAt: new Date().toISOString()
                     }
-                    createHistory(data)
+                    await createHistory(data)
                     return h.response({
                         status: "success",
                         message: "Model is predicted successfully",
@@ -100,7 +100,7 @@ async function getHistories(data) {
                         suggestion: "Penyakit kanker tidak terdeteksi.",
                         createdAt: new Date().toISOString()
                     }
-                    createHistory(data)
+                    await createHistory(data)
                     return h.response({
                         status: "success",
                         message: "Model is predicted successfully",
@@ -145,15 +145,6 @@ async function getHistories(data) {
                 }).code(400);
             }
         },
-        options: {
-            payload: {
-                allow: 'multipart/form-data',
-                multipart: true,
-                output: 'file', // Ensure the file is saved as a temporary file
-                parse: true,    // Automatically parse the payload
-                maxBytes: 100000000
-            }
-        }
     });
 
 
