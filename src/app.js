@@ -24,16 +24,16 @@ async function storeData(data) {
     const server = Hapi.server({
         host: '0.0.0.0',
         port: 8080,
-        // routes: {
-        //     cors: {
-        //         origin: ['*'], // Allow all origins (you can specify specific domains here)
-        //         headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match'], // Allowed headers
-        //         exposedHeaders: ['WWW-Authenticate', 'Server-Authorization'], // Exposed headers
-        //         additionalExposedHeaders: ['X-Custom-Header'], // Additional exposed headers
-        //         maxAge: 60, // Max age for preflight request caching
-        //         credentials: true // Allow credentials (set to false if not needed)
-        //     }
-        // }
+        routes: {
+            cors: {
+                origin: ['*'], // Allow all origins (you can specify specific domains here)
+                headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match'], // Allowed headers
+                exposedHeaders: ['WWW-Authenticate', 'Server-Authorization'], // Exposed headers
+                additionalExposedHeaders: ['X-Custom-Header'], // Additional exposed headers
+                maxAge: 60, // Max age for preflight request caching
+                credentials: true // Allow credentials (set to false if not needed)
+            }
+        }
     });
 
     server.route({
