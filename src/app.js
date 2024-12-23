@@ -5,33 +5,52 @@ const { loadModel, predict } = require('./routes');
 const {Firestore} = require('@google-cloud/firestore')
 const db = new Firestore()
 
-async function storeData(data) {
+async function createHistory(data) {
     try {
         const predictions = db.collection('predictions');
         await predictions.doc(data.id).set(data);
     } catch (error) {
-        console.error('Error storing data:', error);
+        console.error('Error while storing data:', error);
     }
 }
 
+async function getHistories(data) {
+    try {
+        const predictions = db.collection('predictions')
+        const allData = await predictions.get();
+        return allData.docs.map(doc => {
+            const data = doc.data()
+            return {
+                id: data.id,
+                history: {
+                    id: data.id,
+                    result: data.result,
+                    suggestion: data.suggestion,
+                    createdAt: data.createdAt
+                }
+            }
+        })
+    } catch (error) {
+        console.error('Error storing data:', error);
+        throw error
+    }
+}
 
 (async () => {
-    // Load and get machine learning model
     const model = await loadModel();
-    console.log('Model loaded!');
+    console.log('Model successfully loaded!');
 
-    // Initializing HTTP server
     const server = Hapi.server({
         host: '0.0.0.0',
         port: 8080,
         routes: {
             cors: {
-                origin: ['*'], // Allow all origins (you can specify specific domains here)
-                headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match'], // Allowed headers
-                exposedHeaders: ['WWW-Authenticate', 'Server-Authorization'], // Exposed headers
-                additionalExposedHeaders: ['X-Custom-Header'], // Additional exposed headers
-                maxAge: 60, // Max age for preflight request caching
-                credentials: true // Allow credentials (set to false if not needed)
+                origin: ['*'], 
+                headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match'], 
+                exposedHeaders: ['WWW-Authenticate', 'Server-Authorization'], 
+                additionalExposedHeaders: ['X-Custom-Header'],
+                maxAge: 60,
+                credentials: true
             }
         }
     });
@@ -43,24 +62,21 @@ async function storeData(data) {
             const { image } = request.payload;
 
             if (!image) {
-                return h.response({ error: 'Cannot read image' }).code(400);
+                return h.response({ error: 'Image is required' }).code(400);
             }
 
             try {
-                // Check file size (max 1MB)
-                const fileSize = fs.statSync(image.path).size;
-                if (fileSize > 1000000) { // Check manually
+                const imgSize = fs.statSync(image.path).size;
+                if (imgSize > 1000000) { // Check manually
                     return h.response({
                         status: "fail",
                         message: "Payload content length greater than maximum allowed: 1000000"
                     }).code(413);
                 }
 
-                // Read file into buffer
-                const imageBuffer = fs.readFileSync(image.path);
+                const imageData = fs.readFileSync(image.path);
 
-                // Perform prediction
-                const result = await predict(model, imageBuffer);
+                const result = await predict(model, imageData);
 
                 if (result[0] > 0.5) {
                     const data = {
@@ -68,9 +84,8 @@ async function storeData(data) {
                         result: "Cancer",
                         suggestion: "Segera periksa ke dokter!",
                         createdAt: new Date().toISOString()
-                        // createdAt: "2023-12-22T08:26:41.834Z"
                     }
-                    storeData(data)
+                    createHistory(data)
                     return h.response({
                         status: "success",
                         message: "Model is predicted successfully",
@@ -84,16 +99,44 @@ async function storeData(data) {
                         result: "Non-cancer",
                         suggestion: "Penyakit kanker tidak terdeteksi.",
                         createdAt: new Date().toISOString()
-                        // createdAt: "2023-12-22T08:26:41.834Z"
                     }
+                    createHistory(data)
                     return h.response({
                         status: "success",
                         message: "Model is predicted successfully",
                         data
                     }).code(201)
                 }
-
                 throw new Error()
+            } catch (error) {
+                console.error(error);
+                return h.response({
+                    status: "fail",
+                    message: "Terjadi kesalahan dalam melakukan prediksi"
+                }).code(400);
+            }
+        },
+        options: {
+            payload: {
+                allow: 'multipart/form-data',
+                multipart: true,
+                output: 'file', 
+                parse: true,
+                maxBytes: 100000000
+            }
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/predict/histories',
+        handler: async (request, h) => {
+            try {
+                const histories = await getHistories()
+                return h.response({
+                    status: "success",
+                    data: histories
+                }).code(200)
             } catch (error) {
                 console.error(error);
                 return h.response({
